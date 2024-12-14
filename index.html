@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agriculture Policies</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #4CAF50;
+    }
+    label, select, .info {
+      display: block;
+      margin: 15px 0;
+    }
+    .info {
+      padding: 10px;
+      border: 1px solid #ddd;
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>KISANSAHAY by KOSMOQUARKS</h1>
+    <label for="stateSelect">Select a State:</label>
+    <select id="stateSelect">
+      <option value="">-- Select --</option>
+      <option value="Punjab">Punjab</option>
+      <option value="Maharashtra">Maharashtra</option>
+      <option value="Tamil Nadu">Tamil Nadu</option>
+      <option value="Rajasthan">Rajasthan</option>
+    </select>
+    <div id="info" class="info" style="display: none;"></div>
+  </div>
+  <script>
+    document.getElementById('stateSelect').addEventListener('change', async (event) => {
+      const state = event.target.value;
+      const infoDiv = document.getElementById('info');
+      if (!state) {
+        infoDiv.style.display = 'none';
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:3000/api/agriculture/${state}`);
+        const data = await response.json();
+
+        if (data.success) {
+          infoDiv.style.display = 'block';
+          infoDiv.innerHTML = `
+            <h3>${state}</h3>
+            <p><strong>Policies:</strong> ${data.data.policies}</p>
+            <p><strong>Best Methods:</strong> ${data.data.methods}</p>
+          `;
+        } else {
+          infoDiv.style.display = 'block';
+          infoDiv.innerHTML = `<p>${data.message}</p>`;
+        }
+      } catch (error) {
+        infoDiv.style.display = 'block';
+        infoDiv.innerHTML = `<p>Error fetching data.</p>`;
+      }
+    });
+  </script>
+</body>
+</html>
